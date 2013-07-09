@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# A wrapper for real sub-projects
+#
+CUR="${BASH_SOURCE[0]}";
+if([ -h "${CUR}" ]) then
+  while([ -h "${CUR}" ]) do CUR=`readlink -m "${CUR}"`; done
+fi
+pushd . > /dev/null
+cd `dirname ${CUR}` > /dev/null
+CUR=`pwd`;
+popd  > /dev/null
+
