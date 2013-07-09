@@ -11,3 +11,4 @@ cd `dirname ${CUR}` > /dev/null
 CUR=`pwd`;
 popd  > /dev/null
 
+${CUR}/weibo-crawler/node_modules/camel/bin/camel ${CUR}/weibo-crawler/scripts/weibo-crawler.coffee

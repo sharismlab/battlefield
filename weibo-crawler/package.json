@@ -1,0 +1,12 @@
+{
+  "name": "weibo-crawler",
+  "version": "0.0.0",
+  "dependencies": {
+    "camel": "latest",
+    "underscore": "latest",
+    "underscore.string": "latest",
+    "weibo": "latest",
+    "redis": "latest",
+    "nseg": "latest"
+  }
+}

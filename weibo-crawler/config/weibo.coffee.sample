@@ -1,0 +1,10 @@
+###
+  weibo.coffee
+###
+define ->
+    appkey: 'xx'
+    secret: 'xxxx'
+    oauth_callback_url: ''
+    access_token: 'YOUR TOKEN'
+    uid: 1234567
+
