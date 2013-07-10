@@ -8,18 +8,18 @@
 *.*~
 *~
 
-.DS_Store?
-ehthumbs.db
-Icon?
-Thumbs.db
+*.DS_Store
+*ehthumbs.db
+*Icon?
+*Thumbs.db
 
-weibo-crawler/node_modules/*
+*node_modules
+
 weibo-crawler/config/weibo.coffee
 
-pom.xml
+*pom.xml
 *jar
-/lib/
-/classes/
-/targets/
-.lein-deps-sum
+*classes/
+*targets/
+*.lein-deps-sum
 
