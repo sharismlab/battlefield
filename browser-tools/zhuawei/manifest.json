@@ -1,0 +1,32 @@
+{
+  "name": "zhuawei",
+  "version": "0.0.0",
+  "manifest_version": 2,
+
+  "description": "微博抓取工具",
+  "icons": { "16": "icon16.png",
+             "48": "icon48.png",
+             "128": "icon128.png" },
+
+  "page_action": {
+    "default_icon": "icon48.png",
+    "default_title": "download"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://s.weibo.com/weibo/*"],
+      "js": ["jquery.js", "underscore.js", "zhuawei.js"]
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "http://127.0.0.1:8080/*",
+    "http://127.0.0.1:9200/*"
+  ]
+
+}
