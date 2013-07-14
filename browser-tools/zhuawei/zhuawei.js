@@ -1,3 +1,9 @@
+var settings = {
+  webserver: "http://localhost:8080",
+  searchserver: "http://localhost:9200",
+  index: "news"
+};
+
 function fire() {
   console.log("fire!");
 
@@ -16,7 +22,7 @@ function fire() {
         var id = entry[0], user = $(entry[1]), tweet = $(entry[2]), date = entry[3];
         $.ajax({
           type: "POST",
-          url: "http://127.0.0.1:9200/oz214/tweets/" + id,
+          url: settings.searchserver + "/" + settings.index + "/tweets/" + id,
           processData: false,
           contentType: 'application/json',
           data: JSON.stringify({
@@ -30,7 +36,11 @@ function fire() {
   }
 }
 
-chrome.extension.sendMessage({}, function(response) {
+chrome.extension.sendMessage({method: "settings"}, function(response) {
+  settings = response;
+});
+
+chrome.extension.sendMessage({method: "fetch"}, function(response) {
   if ($(location).attr('href').indexOf('http://s.weibo.com/weibo/') === 0) {
     var readyStateCheckInterval = setInterval(function() {
       if (document.readyState === "complete") {

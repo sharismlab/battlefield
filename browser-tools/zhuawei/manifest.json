@@ -8,6 +8,7 @@
              "48": "icon48.png",
              "128": "icon128.png" },
 
+  "options_page": "options.html",
   "page_action": {
     "default_icon": "icon48.png",
     "default_title": "download"
@@ -24,9 +25,6 @@
     }
   ],
   "permissions": [
-    "tabs",
-    "http://127.0.0.1:8080/*",
-    "http://127.0.0.1:9200/*"
+    "tabs", "storage", "http://*/"
   ]
-
 }
