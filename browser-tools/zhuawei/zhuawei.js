@@ -5,7 +5,17 @@ var settings = {
 };
 
 var retag = /#([^#]+)#/g;
-var reping = /@([^:()\ ]+)([:()\ ]|$)/g;
+var reping = /@([\u4e00-\u9fa5a-zA-Z0-9_-]{4,30})/g;
+
+function matches(string, regex, index) {
+    index || (index = 1); // default to the first capturing group
+    var results = [];
+    var match;
+    while (match = regex.exec(string)) {
+        results.push(match[index]);
+    }
+    return results;
+}
 
 function fire() {
   console.log("fire!");
@@ -34,8 +44,8 @@ function fire() {
             username: user.text(),
             userurl: user.attr('href'),
             message: msg,
-            tags: msg.match(retag),
-            pings: msg.match(reping)
+            tags: matches(msg, retag),
+            pings: matches(msg, reping)
           })
         });
     });
