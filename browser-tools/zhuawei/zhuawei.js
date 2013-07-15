@@ -14,7 +14,7 @@ var typeconfig = {
               type: "string",
               index: "not_analyzed"
           },
-          userurl: {
+          userlink: {
               type: "string",
               index: "not_analyzed"
           },
@@ -23,6 +23,26 @@ var typeconfig = {
               index: "not_analyzed"
           },
           pings: {
+              type: "string",
+              index: "not_analyzed"
+          },
+          links: {
+              type: "string",
+              index: "not_analyzed"
+          },
+          retweet: {
+              type: "string",
+              index: "not_analyzed"
+          },
+          retweetmid: {
+              type: "string",
+              index: "not_analyzed"
+          },
+          retweetuname: {
+              type: "string",
+              index: "not_analyzed"
+          },
+          retweetulink: {
               type: "string",
               index: "not_analyzed"
           }
@@ -73,6 +93,24 @@ function fire() {
     _(_.zip(ids, authors, tweets, dates)).each(function (entry, idx) {
         var id = entry[0], user = $(entry[1]), tweet = $(entry[2]), date = entry[3];
         var msg = tweet.text();
+        var links =  _(tweet.children('a')).chain().map(
+          function(a) { return $(a).attr('href'); }
+        ).filter(
+          function(href) { return href.slice(0, 12) == 'http://t.cn/'; }
+        ).value();
+
+        var retweet = null;
+        var retweetmid = null;
+        var retweetuname = null;
+        var retweetulink = null;
+        var retweetNode = tweet.parent().parent('.content').find('dl.comment > dt[node-type="feed_list_forwardContent"]');
+        if (retweetNode) {
+          var retweet = $(retweetNode).children('em').text();
+          var retweetmid = $(retweetNode).children('em > a[action-type="feed_list_url"]').attr('');
+          var retweetulink = $(retweetNode).children('a:first').attr('href');
+          var retweetuname = $(retweetNode).children('a:first').attr('nick-name');
+        }
+
         $.ajax({
           type: "POST",
           url: settings.searchserver + "/" + settings.index + "/tweets/" + id,
@@ -81,10 +119,15 @@ function fire() {
           data: JSON.stringify({
             timestamp: date,
             username: user.text(),
-            userurl: user.attr('href'),
+            userlink: user.attr('href'),
             message: msg,
             tags: matches(msg, retag),
-            pings: matches(msg, reping)
+            pings: matches(msg, reping),
+            links: links,
+            retweet: retweet,
+            retweetmid: retweetmid,
+            retweetulink: retweetulink,
+            retweetuname: retweetuname
           })
         });
     });
