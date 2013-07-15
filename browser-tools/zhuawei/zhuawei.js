@@ -1,8 +1,35 @@
+var index_setuped = false;
+
 var settings = {
   webserver: "http://localhost:8080",
   searchserver: "http://localhost:9200",
   index: "news"
 };
+
+var typeconfig = {
+  mappings: {
+    tweets: {
+      properties: {
+          username: {
+              type: "string",
+              index: "not_analyzed"
+          },
+          userurl: {
+              type: "string",
+              index: "not_analyzed"
+          },
+          tags: {
+              type: "string",
+              index: "not_analyzed"
+          },
+          pings: {
+              type: "string",
+              index: "not_analyzed"
+          }
+      }
+    }
+  }
+}
 
 var retag = /#([^#]+)#/g;
 var reping = /@([\u4e00-\u9fa5a-zA-Z0-9_-]{4,30})/g;
@@ -19,6 +46,18 @@ function matches(string, regex, index) {
 
 function fire() {
   console.log("fire!");
+
+  if (!index_setuped) {
+    console.log("setup!");
+    $.ajax({
+      type: "PUT",
+      url: settings.searchserver + "/" + settings.index,
+      processData: false,
+      contentType: 'application/json',
+      data: JSON.stringify(typeconfig)
+    });
+    index_setuped = true;
+  }
 
   var ids = _.map($('dl.feed_list'), function(dl) { return $(dl).attr('mid'); });
   var authors = _.filter($('dd.content p[node-type="feed_list_content"] > a') , function(a) { return $(a).attr('href').indexOf("http://weibo.com/") === 0; });
@@ -54,6 +93,7 @@ function fire() {
 
 chrome.extension.sendMessage({method: "settings"}, function(response) {
   settings = response;
+  index_setuped = false;
 });
 
 chrome.extension.sendMessage({method: "fetch"}, function(response) {
