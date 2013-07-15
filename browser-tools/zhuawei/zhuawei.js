@@ -4,6 +4,9 @@ var settings = {
   index: "news"
 };
 
+var retag = /#([^#]+)#/g;
+var reping = /@([^:()\ ]+)([:()\ ]|$)/g;
+
 function fire() {
   console.log("fire!");
 
@@ -20,6 +23,7 @@ function fire() {
   if (ids.length === authors.length && ids.length === tweets.length) {
     _(_.zip(ids, authors, tweets, dates)).each(function (entry, idx) {
         var id = entry[0], user = $(entry[1]), tweet = $(entry[2]), date = entry[3];
+        var msg = tweet.text();
         $.ajax({
           type: "POST",
           url: settings.searchserver + "/" + settings.index + "/tweets/" + id,
@@ -29,7 +33,9 @@ function fire() {
             timestamp: date,
             username: user.text(),
             userurl: user.attr('href'),
-            message: tweet.text()
+            message: msg,
+            tags: msg.match(retag),
+            pings: msg.match(reping)
           })
         });
     });
