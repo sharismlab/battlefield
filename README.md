@@ -1,10 +1,9 @@
-battlefield
-===========
+# Battlefield
 
 The battlefield for data journalism
 Real-time analytics
 
-# Test the battlefield
+## Test the battlefield
 
     git clone https://github.com/sharismlab/battlefield.git
 
@@ -28,7 +27,7 @@ Real-time analytics
     bash curl.sh # check elastic search
 
 
-# Setup on Ubuntu 12.04
+## Setup on Ubuntu 12.04
 
 ### Basics
 
@@ -60,4 +59,3 @@ Real-time analytics
     wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.0.deb
     sudo dpkg -i elasticsearch-0.90.0.deb
     sudo service elasticsearch start
-

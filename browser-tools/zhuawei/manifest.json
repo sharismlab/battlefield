@@ -15,13 +15,19 @@
   },
   "background": {
     "scripts": [
-      "background.js"
+      "background.js",
+      "zhuawei_settings.js"
     ]
   },
   "content_scripts": [
     {
       "matches": ["http://s.weibo.com/weibo/*"],
       "js": ["jquery.js", "underscore.js", "zhuawei.js"]
+    },
+    {
+      "matches": ["http://s.weibo.com/weibo/*"],
+      "run_at": "document_start",
+      "js": ["zhuawei_start.js"]
     }
   ],
   "permissions": [
