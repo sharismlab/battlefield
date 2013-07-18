@@ -1,3 +1,4 @@
+function Zhuawei(){};
 var index_setuped = false;
 
 var settings = {
@@ -6,7 +7,7 @@ var settings = {
   index: "news"
 };
 
-var typeconfig = {
+Zhuawei.typeconfig = {
   mappings: {
     tweets: {
       properties: {
@@ -64,7 +65,7 @@ function matches(string, regex, index) {
     return results;
 }
 
-function fire() {
+Zhuawei.fire = function () {
   console.log("fire!");
 
   if (!index_setuped) {
@@ -74,7 +75,7 @@ function fire() {
       url: settings.searchserver + "/" + settings.index,
       processData: false,
       contentType: 'application/json',
-      data: JSON.stringify(typeconfig)
+      data: JSON.stringify(Zhuawei.typeconfig)
     });
     index_setuped = true;
   }
@@ -133,20 +134,3 @@ function fire() {
     });
   }
 }
-
-chrome.extension.sendMessage({method: "settings"}, function(response) {
-  settings = response;
-  index_setuped = false;
-});
-
-chrome.extension.sendMessage({method: "fetch"}, function(response) {
-  if ($(location).attr('href').indexOf('http://s.weibo.com/weibo/') === 0) {
-    var readyStateCheckInterval = setInterval(function() {
-      if (document.readyState === "complete") {
-        clearInterval(readyStateCheckInterval);
-        console.log("hello!");
-        fire();
-      }
-    }, 10);
-  }
-});
