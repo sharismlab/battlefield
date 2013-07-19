@@ -1,7 +1,11 @@
 #! /usr/bin/env bash
 
+# bootstrap
 source scripts/bootstrap.sh
 
-export PATH="$BTF_HOME/build/leiningen:$PATH"
-export LEIN_HOME="$BTF_HOME/build/leiningen"
+# environments
+export PATH="$BTF_HOME/utilities/leiningen:$PATH"
+export LEIN_HOME="$BTF_HOME/utilities/leiningen"
 
+# auto provisioning
+scripts/upgrade.rb config/provision.yaml

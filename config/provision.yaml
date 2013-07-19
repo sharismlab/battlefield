@@ -1,0 +1,17 @@
+base:
+    - python: "2.7.3"
+    - ruby: "2.0.0"
+    - java: "openjdk-jdk-7"
+    - node: "0.10.13"
+    - lua: "5.1"
+
+utilities:
+    - leiningen: "2.2.0"
+
+packages:
+    - leiningen: "2.2.0"
+
+services:
+    - nginx: "1.4.2"
+    - redis: "2.6.14"
+    - elasticsearch: "0.90.2"
