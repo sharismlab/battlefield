@@ -1,7 +1,7 @@
 base:
     - python: "2.7.3"
-    - ruby: "2.0.0"
-    - java: "openjdk-jdk-7"
+    - ruby: "1.9.3"
+    - java: "openjdk-7-jdk"
     - node: "0.10.13"
     - lua: "5.1"
 

@@ -8,7 +8,7 @@ provision.each_key do |lname|
   layer.each do |entry|
     entry.each_key do |name|
       version = entry[name]
-      invoker = "#{ENV['BTF_HOME']}/scripts/#{name}/upgrade"
+      invoker = "#{ENV['BTF_HOME']}/scripts/#{name}/upgrade.sh"
       IO.popen [invoker, version] if File.file?(invoker)
     end
   end
