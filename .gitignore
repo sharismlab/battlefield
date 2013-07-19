@@ -15,7 +15,7 @@
 
 *node_modules
 
-weibo-crawler/config/weibo.coffee
+backend/weibo-crawler/config/weibo.coffee
 
 *pom.xml
 *jar
