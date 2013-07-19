@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+source scripts/bootstrap.sh
+
+export PATH="$BTF_HOME/build/leiningen:$PATH"
+export LEIN_HOME="$BTF_HOME/build/leiningen"
+
+
