@@ -1,10 +1,12 @@
 function Zhuawei(){};
-var index_setuped = false;
+Zhuawei.index_setuped = false;
 
-var settings = {
+Zhuawei.settings = {
   webserver: "http://localhost:8080",
   searchserver: "http://localhost:9200",
-  index: "news"
+  index: "news",
+  username: "",
+  password: ""
 };
 
 Zhuawei.typeconfig = {
@@ -68,11 +70,11 @@ function matches(string, regex, index) {
 Zhuawei.fire = function () {
   console.log("fire!");
 
-  if (!index_setuped) {
+  if (!Zhuawei.index_setuped) {
     console.log("setup!");
     $.ajax({
       type: "PUT",
-      url: settings.searchserver + "/" + settings.index,
+      url: Zhuawei.settings.searchserver + "/" + Zhuawei.settings.index,
       processData: false,
       contentType: 'application/json',
       data: JSON.stringify(Zhuawei.typeconfig)
@@ -114,11 +116,13 @@ Zhuawei.fire = function () {
 
         $.ajax({
           type: "POST",
-          url: settings.searchserver + "/" + settings.index + "/tweets/" + id,
+          url: Zhuawei.settings.searchserver + "/" + Zhuawei.settings.index + "/tweets/" + id,
           processData: false,
           contentType: 'application/json',
+		  username: Zhuawei.settings.username,
+		  password: Zhuawei.settings.password,
           data: JSON.stringify({
-            timestamp: date,
+            '@timestamp': date,
             username: user.text(),
             userlink: user.attr('href'),
             message: msg,
@@ -134,3 +138,8 @@ Zhuawei.fire = function () {
     });
   }
 }
+
+chrome.extension.sendMessage({method: "settings"}, function(response) {
+  Zhuawei.settings = response;
+  Zhuawei.index_setuped = false;
+});

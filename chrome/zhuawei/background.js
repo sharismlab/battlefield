@@ -20,7 +20,9 @@ chrome.extension.onMessage.addListener(
       sendResponse({
         webserver: localStorage['webserver'],
         searchserver: localStorage['searchserver'],
-        index: localStorage['index']
+        index: localStorage['index'],
+		username: localStorage['username'],
+		password: localStorage['password']
       });
     }
 
