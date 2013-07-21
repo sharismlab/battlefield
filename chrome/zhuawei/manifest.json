@@ -15,8 +15,7 @@
   },
   "background": {
     "scripts": [
-      "background.js",
-      "zhuawei_settings.js"
+      "background.js"
     ]
   },
   "content_scripts": [

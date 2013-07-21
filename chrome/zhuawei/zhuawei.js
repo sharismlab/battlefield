@@ -2,8 +2,8 @@ function Zhuawei(){};
 Zhuawei.index_setuped = false;
 
 Zhuawei.settings = {
-  webserver: "http://localhost:8080",
-  searchserver: "http://localhost:9200",
+  webserver: "http://btf.sharismlab.com/",
+  searchserver: "http://btf.sharismlab.com/search/",
   index: "news",
   username: "",
   password: ""
@@ -67,20 +67,41 @@ function matches(string, regex, index) {
     return results;
 }
 
-Zhuawei.fire = function () {
-  console.log("fire!");
+Zhuawei.checkAndFire = function () {
+  console.log("check!");
+  $.ajax({
+      type: "GET",
+      cache: false,
+      username: Zhuawei.settings.username,
+      password: Zhuawei.settings.password,
+      url: Zhuawei.settings.searchserver + "/" + Zhuawei.settings.index + "/_status",
+      success: function() {
+          Zhuawei.fire();
+      },
+      error: function() {
+          Zhuawei.setup();
+      }
+  });
+}
 
+Zhuawei.setup = function () {
   if (!Zhuawei.index_setuped) {
     console.log("setup!");
     $.ajax({
-      type: "PUT",
+      type: "POST",
       url: Zhuawei.settings.searchserver + "/" + Zhuawei.settings.index,
+      username: Zhuawei.settings.username,
+      password: Zhuawei.settings.password,
       processData: false,
       contentType: 'application/json',
       data: JSON.stringify(Zhuawei.typeconfig)
     });
-    index_setuped = true;
+    Zhuawei.index_setuped = true;
   }
+}
+
+Zhuawei.fire = function () {
+  console.log("fire!");
 
   var ids = _.map($('dl.feed_list'), function(dl) { return $(dl).attr('mid'); });
   var authors = _.filter($('dd.content p[node-type="feed_list_content"] > a') , function(a) { return $(a).attr('href').indexOf("http://weibo.com/") === 0; });
@@ -119,8 +140,8 @@ Zhuawei.fire = function () {
           url: Zhuawei.settings.searchserver + "/" + Zhuawei.settings.index + "/tweets/" + id,
           processData: false,
           contentType: 'application/json',
-		  username: Zhuawei.settings.username,
-		  password: Zhuawei.settings.password,
+          username: Zhuawei.settings.username,
+          password: Zhuawei.settings.password,
           data: JSON.stringify({
             '@timestamp': date,
             username: user.text(),

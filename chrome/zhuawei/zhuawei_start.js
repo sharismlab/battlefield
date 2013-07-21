@@ -4,7 +4,7 @@ chrome.extension.sendMessage({method: "fetch"}, function(response) {
       if (document.readyState === "complete") {
         clearInterval(readyStateCheckInterval);
         console.log("hello!");
-        Zhuawei.fire();
+        Zhuawei.checkAndFire();
       }
     }, 10);
   }
