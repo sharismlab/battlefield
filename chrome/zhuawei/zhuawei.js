@@ -2,8 +2,8 @@ function Zhuawei(){};
 Zhuawei.index_setuped = false;
 
 Zhuawei.settings = {
-  webserver: "http://btf.sharismlab.com/",
-  searchserver: "http://btf.sharismlab.com/search/",
+  webserver: "http://btf.sharismlab.com",
+  searchserver: "http://btf.sharismlab.com/search",
   index: "news",
   username: "",
   password: ""
