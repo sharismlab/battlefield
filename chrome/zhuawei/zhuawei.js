@@ -24,7 +24,7 @@ function requestDispatcher(request, sender, response){
         console.log('[onRequest]its an API request');
         sender.fromTab = sender.tab?true:false;
         sender.fromExt = !sender.fromTab;
-        _.delay(function(){API[method].call(this, request, sender, response);}, 500);   // need an alternative method
+        _.delay(function(){API[method].call(this, request, sender, response);}, 200);   // need an alternative method
     }else{
         console.log('[onRequest]its nothing');
         response();
