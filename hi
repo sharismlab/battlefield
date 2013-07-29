@@ -2,10 +2,10 @@
 
 # bootstrap
 source scripts/bootstrap.sh
+source $BTF_HOME/utilities/ansible/hacking/env-steup
 
 # environments
 export PATH="$BTF_HOME/utilities/leiningen:$PATH"
-export LEIN_HOME="$BTF_HOME/utilities/leiningen"
 
-# auto provisioning
-scripts/upgrade.rb config/provision.yaml
+export LEIN_HOME="$BTF_HOME/utilities/leiningen"
+export ANSIBLE_HOSTS="$BTF_HOME/config/host.ini"
