@@ -2,10 +2,16 @@
 
 # bootstrap
 source scripts/bootstrap.sh
-source $BTF_HOME/utilities/ansible/hacking/env-steup
+source $BTF_HOME/utilities/ansible/hacking/env-setup
 
 # environments
+if [ -n "$1" ] ; then
+    export ENV="$1"
+else
+    export ENV="develop"
+fi
+
 export PATH="$BTF_HOME/utilities/leiningen:$PATH"
 
 export LEIN_HOME="$BTF_HOME/utilities/leiningen"
-export ANSIBLE_HOSTS="$BTF_HOME/config/host.ini"
+export ANSIBLE_HOSTS="$BTF_HOME/config/$ENV/hosts.ini"
