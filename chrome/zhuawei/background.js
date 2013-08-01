@@ -7,11 +7,22 @@
     root.zhuawei = zhuawei;
 
     var parserUtils = {
-        'getTimeSinaA': function(jq){
-            // for userPage, searchPage
+        'int2isodate': function(i){
             var d = new Date();
-            d.setSeconds(parseInt(jq.find('a[node-type="feed_list_item_date"]').attr('date'))/1000);
+            d.setTime(i);
             return d.toISOString();
+        },
+        'getTimeSinaA': function(jq){
+            // for userPage
+            return parserUtils.int2isodate(parseInt($(jq.find('div.WB_from').filter(':last')).find('a.WB_time').attr('date')));
+        },
+        'getTimeSinaB': function(jq){
+            // for topicPage
+            return parserUtils.int2isodate(parseInt(jq.find('div.content span.time a').attr('date')));
+        },
+        'getTimeSinaC': function(jq){
+            // for searchPage
+            return parserUtils.int2isodate(parseInt(jq.find('.info.W_linkb').filter(':last').find('a.date').attr('date'))/1000);
         },
         'getMidSinaA': function(jq){
             // for userPage, searchPage
@@ -22,25 +33,33 @@
             // currently there's only one data(mid=xxx), we need to track the data changing
             return jq.attr('list-data').split('=')[1];
         },
-        'getAccountSina': function(jq){
-            //TODO
-            return;
+        'getAccountSinaA': function(jq){
+            // for userPage
+            return "http://weibo.com/u/"+jq.find('div.WB_from').filter(':last').find('a.WB_time').attr('href').split('/')[1];
+        },
+        'getAccountSinaB': function(jq){
+            // for topicPage
+            return "http://weibo.com/u/"+jq.find('div.content span.time a').attr('href').split('/')[1];
+        },
+        'getAccountSinaC': function(jq){
+            // for searchPage
+            return "http://weibo.com/u/"+jq.find('.info.W_linkb').filter(':last').find('a.date').attr('href').split('/')[3];
         },
         'getPermalinkSinaA': function(jq){
             // for userPage
-            return jq.find('div.WB_from a').get(0).href;
+            return 'http://weibo.com'+jq.find('div.WB_from').filter(':last').find('a.WB_time').attr('href');
         },
         'getPermalinkSinaB': function(jq){
             // for topicPage
-            return jq.find('span.time a').attr('href');
+            return 'http://weibo.com'+jq.find('div.content span.time a').attr('href');
         },
         'getPermalinkSinaC': function(jq){
             // for searchPage
-            return jq.find('a.date').attr('href');
+            return 'http://weibo.com'+jq.find('.info.W_linkb').filter(':last').find('a.date').attr('href');
         },
         'getMessageSinaA': function(jq){
             // for userPage
-            return jq.find('div.WB_text').text();
+            return jq.find('div.WB_text').filter(':first').text();
         },
         'getMessageSinaB': function(jq){
             // for topicPage
@@ -48,11 +67,11 @@
         },
         'getMessageSinaC': function(jq){
             // for searchPage
-            return jq.find('dd.content em').text();
+            return jq.find('em:not([class])').filter(':first').text();
         },
         'getLinksSinaA': function(jq){
             // for userPage
-            return _.map(jq.find('div.WB_text a[action-type="feed_list_url"]'), function(o){return o.href;});
+            return _.map(jq.find('div.WB_text').filter(':first').find('a[action-type="feed_list_url"]'), function(o){return o.href;});
         },
         'getLinksSinaB': function(jq){
             // for topicPage
@@ -60,31 +79,35 @@
         },
         'getLinksSinaC': function(jq){
             // for searchPage
-            return _.map(jq.find('dd.content em a[action-type="feed_list_url"]'), function(o){return o.href;});
+            return _.map(jq.find('em:not([class])').filter(':first').find('a[action-type="feed_list_url"]'), function(o){return o.href;});
         },
         'getImagesSinaA': function(jq){
-            // for userPage, searchPage
-            return _.map(jq.find('dd.content > ul.piclist img.bigcursor'), function(o){return o.src;});
+            // for userPage
+            return _.map(jq.find('ul.WB_media_list img.bigcursor'), function(o){return o.src;});
         },
         'getImagesSinaB': function(jq){
             // for topicPage
             return _.map(jq.find('div.con_media img.bigcursor'), function(o){return o.src;});
         },
+        'getImagesSinaC': function(jq){
+            // for searchPage
+            return _.map(jq.find('ul.piclist img.bigcursor'), function(o){return o.src;});
+        },
         'getVideoSinaA': function(jq){
             // for userPage
-            return _.map(jq.find('div.WB_feed_detail > div.WB_detail > ul.WB_media_list li[action-type="feed_list_media_video"]'), function(o){ return _.filter(decodeURIComponent(o.getAttribute("action-data")).split('&'), function(pair){ return pair.indexOf('full_url='==0;)})[0].slice(9);});
+            return _.map(jq.find('ul.WB_media_list li[action-type="feed_list_media_video"]'), function(o){ var res=_.filter(decodeURIComponent(o.getAttribute("action-data")).split('&'), function(pair){ return pair.indexOf('full_url=')==0;}); if(!_.isEmpty(res)){return res[0].slice(9);}});
         },
         'getVideoSinaB': function(jq){
             // for topicPage
-            return _.map(jq.find('div.con_media ul.media_list > li[action-type="list_preview"]'), function(o){ return _.filter(decodeURIComponent(o.getAttribute("action-data")).split('&'), function(pair){ return pair.indexOf('full_url='==0;)})[0].slice(9);});
+            return _.map(jq.find('div.con_media ul.media_list > li[action-type="list_preview"]'), function(o){ var res=_.filter(decodeURIComponent(o.getAttribute("action-data")).split('&'), function(pair){ return pair.indexOf('full_url=')==0;}); if(!_.isEmpty(res)){return res[0].slice(9);}});
         },
         'getVideoSinaC': function(jq){
             // for searchPage
-            return _.map(jq.find('dd.content > ul.piclist img[action-type="feed_list_media_video"]'), function(o){ return _.filter(decodeURIComponent(o.getAttribute("action-data")).split('&'), function(pair){ return pair.indexOf('full_url='==0;)})[0].slice(9);});
+            return _.map(jq.find('ul.piclist img[action-type="feed_list_media_video"]'), function(o){ var res=_.filter(decodeURIComponent(o.getAttribute("action-data")).split('&'), function(pair){ return pair.indexOf('full_url=')==0;}); if(!_.isEmpty(res)){return res[0].slice(9);}});
         },
         'getTagsSinaA': function(jq){
             // for userPage
-            return _.map(jq.find('div.WB_text a.a_topic'), function(o){ return o.innerText;});
+            return _.map(jq.find('div.WB_text').filter(':first').find('a.a_topic'), function(o){ return o.innerText;});
         },
         'getTagsSinaB': function(jq){
             // for topicPage
@@ -92,11 +115,11 @@
         },
         'getTagsSinaC': function(jq){
             // for searchPage
-            return _.map(jq.find('dd.content a'), function(o){ return o.innerText;});
+            return _.map(jq.find('em:not([class]').filter(':first').find('a.a_topic'), function(o){ return o.innerText;});
         },
         'getAtsSinaA': function(jq){
             // for userPage
-            return _.map(jq.find('div.WB_text a[usercard]'), function(o){return o.innerText.slice(1);});
+            return _.map(jq.find('div.WB_text').filter(':first').find('a[usercard]'), function(o){return o.innerText.slice(1);});
         },
         'getAtsSinaB': function(jq){
             // for topicPage
@@ -104,51 +127,171 @@
         },
         'getAtsSinaC': function(jq){
             // for searchPage
-            return _.map(jq.find('dd.content em a[usercard]'), function(o){return o.innerText.slice(1);});
+            return _.map(jq.find('em:not([class]').filter(':first').find('a[usercard]'), function(o){return o.innerText.slice(1);});
         },
-
-
+        'getRetweetSinaA': function(jq){
+            // for userPage
+            var expand = jq.find('div.WB_media_expand').filter(':first');
+            var link = expand.find('div.WB_from a.WB_time');
+            if(link.length==0){return;};
+            return {
+                '@timestamp': parserUtils.getTimeSinaA(expand),
+                'service': 'sina',
+                'mid': expand.find('div.WB_handle').attr('mid'),
+                'person': zhuawei.store['user'],
+                'account': parserUtils.getAccountSinaA(expand),
+                'permalink': parserUtils.getPermalinkSinaA(expand),
+                'message': parserUtils.getMessageSinaA(expand),
+                'links': parserUtils.getLinksSinaA(expand),
+                'images': parserUtils.getImagesSinaA(expand),
+                'video': parserUtils.getVideoSinaA(expand),
+                'tags': parserUtils.getTagsSinaA(expand),
+                'ats': parserUtils.getAtsSinaA(expand)
+            };
+        },
+        'getRetweetSinaB': function(jq){
+            // for topicPage
+            return;             // it seems tweets on topicPage dont has retweets
+        },
+        'getRetweetSinaC': function(jq){
+            // for searchPage
+            var expand = jq.find('dl.comment');
+            var link = expand.find('.info.W_linkb');
+            if(link.length==0){return;};
+            return {
+                '@timestamp': parserUtils.getTimeSinaC(expand),
+                'service': 'sina',
+                'mid': null,
+                'person': zhuawei.store['user'],
+                'account': parserUtils.getAccountSinaC(expand),
+                'permalink': parserUtils.getPermalinkSinaC(expand),
+                'message': parserUtils.getMessageSinaC(expand),
+                'links': parserUtils.getLinksSinaC(expand),
+                'images': parserUtils.getImagesSinaC(expand),
+                'video': parserUtils.getVideoSinaC(expand),
+                'tags': parserUtils.getTagsSinaC(expand),
+                'ats': parserUtils.getAtsSinaC(expand)
+            };
+        }
     };
 
     // url patterns sina only currently
     var serviceUrlPatterns = {
-        "sina_userPage": [/https?:\/\/weibo\.com\/(u\/)?[a-zA-Z0-9]+\/profile.*/i, /https?:\/\/weibo\.com\/(u\/)?[a-zA-Z0-9]+(\?.+)?$/i],
+        "sina_userPage": [  /https?:\/\/weibo\.com\/(u\/)?[a-zA-Z0-9]+\/profile.*/i,
+                            /https?:\/\/weibo\.com\/(u\/)?[a-zA-Z0-9]+(\?.+)?$/i,
+                            /https?:\/\/weibo\.com\/p\/[0-9]+\/(home|weibo)(\?.+)?$/i,
+                            ],
         "sina_topicPage": [/https?:\/\/huati\.weibo\.com\/.*/i],
         "sina_searchPage": [/https?\/\/s\.weibo\.com\/weibo\/.*/i],
     };
 
     var serviceSelectors = {
         "sina_userPage": ['div.WB_feed div.WB_feed_type'],
-        "sina_topicPage": '',
-        "sina_searchPage": '',
+        "sina_topicPage": [''],
+        "sina_searchPage": [''],
     };
 
     var serviceParsers = {
         "sina_userPage": function(msg){
-            var o = $(msg);
-
+            var jq=$(msg);
+            return {
+                '@timestamp': parserUtils.getTimeSinaA(jq),
+                'service': 'sina',
+                'mid': parserUtils.getMidSinaA(jq),
+                'person': zhuawei.store['user'],
+                'account': parserUtils.getAccountSinaA(jq),
+                'permalink': parserUtils.getPermalinkSinaA(jq),
+                'message': parserUtils.getMessageSinaA(jq),
+                'links': parserUtils.getLinksSinaA(jq),
+                'images': parserUtils.getImagesSinaA(jq),
+                'video': parserUtils.getVideoSinaA(jq),
+                'tags': parserUtils.getTagsSinaA(jq),
+                'ats': parserUtils.getAtsSinaA(jq),
+                'retweet': parserUtils.getRetweetSinaA(jq)
+            };
         },
         "sina_topicPage": function(msg){
+            var jq=$(msg);
+            return {
+                '@timestamp': parserUtils.getTimeSinaB(jq),
+                'service': 'sina',
+                'mid': parserUtils.getMidSinaB(jq),
+                'person': zhuawei.store['user'],
+                'account': parserUtils.getAccountSinaB(jq),
+                'permalink': parserUtils.getPermalinkSinaB(jq),
+                'message': parserUtils.getMessageSinaB(jq),
+                'links': parserUtils.getLinksSinaB(jq),
+                'images': parserUtils.getImagesSinaB(jq),
+                'video': parserUtils.getVideoSinaB(jq),
+                'tags': parserUtils.getTagsSinaB(jq),
+                'ats': parserUtils.getAtsSinaB(jq),
+                'retweet': parserUtils.getRetweetSinaB(jq)
+            };
         },
         "sina_searchPage": function(msg){
+            var jq=$(msg);
+            return {
+                '@timestamp': parserUtils.getTimeSinaC(jq),
+                'service': 'sina',
+                'mid': parserUtils.getMidSinaC(jq),
+                'person': zhuawei.store['user'],
+                'account': parserUtils.getAccountSinaC(jq),
+                'permalink': parserUtils.getPermalinkSinaC(jq),
+                'message': parserUtils.getMessageSinaC(jq),
+                'links': parserUtils.getLinksSinaC(jq),
+                'images': parserUtils.getImagesSinaC(jq),
+                'video': parserUtils.getVideoSinaC(jq),
+                'tags': parserUtils.getTagsSinaC(jq),
+                'ats': parserUtils.getAtsSinaC(jq),
+                'retweet': parserUtils.getRetweetSinaC(jq)
+            };
         },
     };
 
-    /** **
-    // apis for pageAction and content scripts
-    bg.api = {
-        "checkPageaction": function(request, sender, response){
-            var tab = sender.tab;
-            if(tab && tab.url && zhuawei.url2service(tab.url)){
-                    chrome.pageAction.show(tab.id);
-                    response("pageAction has shown");
-            }else{
-                    console.log("[API]"+request.method+", Fail, url="+tab.url);
-                    response("fail!!");
-            }
+    zhuawei.typeconfig = {
+      mappings: {
+        tweets: {
+          properties: {
+              username: {
+                  type: "string",
+                  index: "not_analyzed"
+              },
+              userlink: {
+                  type: "string",
+                  index: "not_analyzed"
+              },
+              tags: {
+                  type: "string",
+                  index: "not_analyzed"
+              },
+              pings: {
+                  type: "string",
+                  index: "not_analyzed"
+              },
+              links: {
+                  type: "string",
+                  index: "not_analyzed"
+              },
+              retweet: {
+                  type: "string",
+                  index: "not_analyzed"
+              },
+              retweetmid: {
+                  type: "string",
+                  index: "not_analyzed"
+              },
+              retweetuname: {
+                  type: "string",
+                  index: "not_analyzed"
+              },
+              retweetulink: {
+                  type: "string",
+                  index: "not_analyzed"
+              }
+          }
         }
-    };
-    /** **/
+      }
+    }
 
     // utils
     zhuawei.url2service = function(url){
@@ -158,9 +301,65 @@
         }
     }
 
+    zhuawei.grabAndSend = function(){
+        chrome.tabs.query({currentWindow: true}, function(tabs){
+            // TODO: consider task queue 
+            var tab = tabs[0];
+            var tabId = tab.id,
+                tabUrl = tabUrl;
+            $.ajax({
+                type: "GET",
+                cache: false,
+                username: localStorage.username,
+                password: localStorage.password,
+                url: localStorage.searchserver + "/" + localStorage.index + "/_status",
+
+                success: function() {
+                    chrome.tabs.sendRequest(tabId, {method: 'grabTweets', selectors: serviceSelectors[zhuawei.url2service(tabUrl)]}, function(msg){
+                        if(!msg || _.isEmpty(msg)){
+                            console.log("[onResponse] nothing return from grabTweets!!!");
+                            return;
+                        };
+                        var parserFunc = serviceParsers[zhuawei.url2service(tabUrl)];
+                        var tweets = _.map(msg, parserFunc);
+                        //TODO
+                    });
+                },
+
+                error: function(){
+                    if (!zhuawei.index_setuped){
+                        console.log("setup!");
+                        $.ajax({
+                            type: "POST",
+                            url: localStorage.searchserver + "/" + localStorage.index,
+                            username: localStorage.username,
+                            password: localStorage.password,
+                            processData: false,
+                            contentType: 'application/json',
+                            data: JSON.stringify(zhuawei.typeconfig)
+                        });
+                        zhuawei.index_setuped = true;
+                    }
+                }
+            });
+        });
+        return;
+    }
+
+    /** **
+    // apis for pageAction and content scripts
+    bg.api = {
+        "grabAndSend": function(request, sender, response){
+            chrome.pageAction.hide();
+        }
+    };
+    /** **/
+
     /** **
     // dispatching api request
     chrome.extension.onMessage.addListener(function(request, sender, response){
+        console.log('incoming message');
+        console.log(sender);
         if(_.has(bg.api, request.method)){
             bg.api[request.method](request, sender, response);
         }
@@ -170,7 +369,7 @@
 
     /** **/
     chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-        //console.log([tabId, changeInfo, tab]);
+        console.log([tabId, changeInfo, tab]);
         var tabUrl = tab.url;
         // detect pageAction
         if(changeInfo.status == "loading" && zhuawei.url2service(tabUrl)){
@@ -180,15 +379,20 @@
         /** **/
         // grab tweets
         if(changeInfo.status == "complete" && zhuawei.url2service(tabUrl)){
+            /** **
             chrome.tabs.sendRequest(tabId, {method: 'grabTweets', selectors: serviceSelectors['sina_userPage']}, function(msg){
                 if(!msg || _.isEmpty(msg)){
                     console.log("[onResponse] nothing return!!!");
                     return;
                 };
                 chrome.pageAction.show(tabId);
-                console.log(msg);
+                var parserFunc = serviceParsers[zhuawei.url2service(tabUrl)];
+                var tweets = _.map(msg, parserFunc);
+                console.log(tweets);
                 //console.log(_.map(msg, function(o){ return $(o).find("div.WB_text").innerHTML;}));
             });
+            /** **/
+            chrome.pageAction.show(tabId);
         };
         /** **/
     });
