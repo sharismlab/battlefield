@@ -202,7 +202,7 @@
                 hasForward=expand.find('a').length==0?false:true;
 
             return {
-                '@timestamp': parserUtils.getTimeSinaA(jq),
+                'timestamp': parserUtils.getTimeSinaA(jq),
                 'service': 'sina',
                 'mid': parserUtils.getMidSinaA(jq),
                 'person': zhuawei.store['user'],
@@ -221,7 +221,7 @@
         "sina_topicPage": function(msg){
             var jq=$(msg);
             return {
-                '@timestamp': parserUtils.getTimeSinaB(jq),
+                'timestamp': parserUtils.getTimeSinaB(jq),
                 'service': 'sina',
                 'mid': parserUtils.getMidSinaB(jq),
                 'person': zhuawei.store['user'],
@@ -242,7 +242,7 @@
                 expand=jq.find('dl.comment'),
                 hasForward=expand.find('a').length==0?false:true;
             return {
-                '@timestamp': parserUtils.getTimeSinaC(jq),
+                'timestamp': parserUtils.getTimeSinaC(jq),
                 'service': 'sina',
                 'mid': parserUtils.getMidSinaC(jq),
                 'person': zhuawei.store['user'],
@@ -356,7 +356,7 @@
                         };
                         var parserFunc = serviceParsers[zhuawei.url2service(tabUrl)];
                         var tweets = _.map(msg, parserFunc);
-                        var request = _.map(tweets, JSON.stringify).join('\n');
+                        var request = _.map(tweets, function(o){return JSON.stringify({'create': o});}).join('\n');
                         //TODO
                         $.ajax({
                             type: "POST",
