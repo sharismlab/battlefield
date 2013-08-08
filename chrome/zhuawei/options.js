@@ -13,7 +13,7 @@ function save_options() {
   localStorage["password"] = password;
   status.innerHTML = "选项已保存！权限已设置！";
   setTimeout(function() {
-        status.innerHTML = "";
+        window.location.href = "popup.html";
   }, 750);
 }
 

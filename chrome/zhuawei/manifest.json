@@ -3,33 +3,31 @@
   "version": "0.0.0",
   "manifest_version": 2,
 
-  "description": "微博抓取工具",
-  "icons": { "16": "icon16.png",
-             "48": "icon48.png",
-             "128": "icon128.png" },
+  "description": "微薄抓取工具",
+  "icons": { "16": "image/icon16.png",
+             "48": "image/icon48.png",
+             "128": "image/icon128.png" },
 
-  "options_page": "options.html",
   "page_action": {
-    "default_icon": "icon48.png",
-    "default_title": "download"
+    "default_icon": "image/icon48.png",
+    "default_title": "",
+    "default_popup": "popup.html"
   },
   "background": {
     "scripts": [
-      "background.js"
+        "library/jquery.js",
+        "library/underscore.js",
+        "background.js"
     ]
   },
   "content_scripts": [
     {
-      "matches": ["http://s.weibo.com/weibo/*"],
-      "js": ["jquery.js", "underscore.js", "zhuawei.js"]
-    },
-    {
-      "matches": ["http://s.weibo.com/weibo/*"],
-      "run_at": "document_start",
-      "js": ["zhuawei_start.js"]
+      "matches": ["*://*.weibo.com/*", "*://weibo.com/*"],
+      "run_at": "document_end",
+      "js": ["library/jquery.js", "library/underscore.js", "zhuawei.js"]
     }
   ],
   "permissions": [
-    "tabs", "storage", "http://*/"
+    "tabs", "storage", "background", "notifications", "*://*/"
   ]
 }
