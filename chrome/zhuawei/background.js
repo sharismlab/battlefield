@@ -186,7 +186,7 @@
                             /https?:\/\/weibo\.com\/p\/[0-9]+\/(home|weibo)(\?.+)?$/i,
                             ],
         "sina_topicPage": [/https?:\/\/huati\.weibo\.com\/.*/i],
-        "sina_searchPage": [/https?\/\/s\.weibo\.com\/weibo\/.*/i],
+        "sina_searchPage": [/https?:\/\/s\.weibo\.com\/weibo\/.*/i],
     };
 
     var serviceSelectors = {
@@ -328,6 +328,8 @@
     // utils
     zhuawei.url2service = function(url){
         var matches = _.filter(_.pairs(serviceUrlPatterns), function(pair){ return _.any(pair[1], function(patt){ return url.match(patt);})});
+        console.log(url);
+        console.log(matches);
         if(!_.isEmpty(matches)){
             return matches[0][0];
         }
