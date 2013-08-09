@@ -244,7 +244,7 @@
             return {
                 'timestamp': parserUtils.getTimeSinaC(jq),
                 'service': 'sina',
-                'mid': parserUtils.getMidSinaC(jq),
+                'mid': parserUtils.getMidSinaA(jq),
                 'person': zhuawei.store['user'],
                 'account': parserUtils.getAccountSinaC(jq),
                 'permalink': parserUtils.getPermalinkSinaC(jq),
@@ -358,11 +358,12 @@
                         };
                         var parserFunc = serviceParsers[zhuawei.url2service(tabUrl)];
                         var tweets = _.map(msg, parserFunc);
-                        var request = _.map(tweets, function(o){return JSON.stringify({'create': o});}).join('\n');
+						var action = {index: { "_index" : localStorage.index, "_type" : "tweets" }};
+                        var request = _.map(tweets, function(o){return JSON.stringify(action) + "\n" + JSON.stringify(o) + "\n";}).join('\n');
                         //TODO
                         $.ajax({
                             type: "POST",
-                            url: localStorage.searchserver + "/" + localStorage.index + "/_bulk",
+                            url: localStorage.searchserver + "/_bulk",
                             processData: false,
                             contentType: 'application/json',
                             username: localStorage.username,
