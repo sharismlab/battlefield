@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# A wrapper for real sub-projects
+#
+CUR="${BASH_SOURCE[0]}";
+if([ -h "${CUR}" ]) then
+  while([ -h "${CUR}" ]) do CUR=`readlink -m "${CUR}"`; done
+fi
+pushd . > /dev/null
+cd `dirname ${CUR}` > /dev/null
+CUR=`pwd`;
+popd  > /dev/null
+
+# exec "${CUR}/news-crawler/node_modules/camel/bin/camel" "${CUR}/news-crawler/scripts/news-crawler.coffee"
+# exec "${CUR}/weibo-crawler/node_modules/camel/bin/camel" "${CUR}/weibo-crawler/scripts/weibo-crawler.coffee"
+
+nginx -p ${CUR} -c ${CUR}/services/nginx/nginx-conf/nginx.conf
