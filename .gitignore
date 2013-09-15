@@ -26,3 +26,5 @@ backend/weibo-crawler/config/weibo.coffee
 *.lein-deps-sum
 
 sandbox/tweet
+
+logs/*

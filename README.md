@@ -14,3 +14,10 @@ In developping and not ready for use
     sudo pip install paramiko
     sudo pip install PyYAML
     sudo pip install jinja2
+
+
+### Use
+
+    bash hi # setup env
+    ./btf   # lauch the app
+
